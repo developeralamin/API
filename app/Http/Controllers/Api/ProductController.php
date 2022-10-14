@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
-
-use App\Models\Post;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\PostResource;
-use App\Http\Repository\PostRepository;
-use App\Http\Requests\PostRequest;
+use Illuminate\Http\Request;
+use App\Http\Repository\ProductRepository;
+use App\Http\Resources\ProductResource;
+use App\Http\Requests\ProductRequest;
 
-class PostController extends Controller
+class ProductController extends Controller
 {
+    private ProductRepository $product;
 
-    private PostRepository $post;
-
-    public function __construct(PostRepository $post)
+    public function __construct()
     {
-        $this->post = $post;
+        $product = new ProductRepository();
+
+        $this->product = $product;
     }
 
     /**
@@ -27,14 +26,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = $this->post->allPost();
-        return response()->json([
-            'success' => true,
-            'message' => 'Post List',
-            'data'    => $posts
-        ]);
-        /*  $data = $this->post->allPost();
-        return PostResource::collection($data); */
+        $product =  $this->product->allProduct();
+        return ProductResource::collection($product);
     }
 
     /**
@@ -43,13 +36,11 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PostRequest $request)
+    public function store(ProductRequest $request)
     {
         $data = $request->all();
-
-        $post = $this->post->createPost($data);
-
-        return new PostResource($post);
+        $post =  $this->product->createProduct($data);
+        return new ProductResource($post);
     }
 
     /**
@@ -60,10 +51,9 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post =  $this->post->findOrFail($id);
-        return new PostResource($post);
+        $product =  $this->product->findOrFail($id);
+        return new ProductResource($product);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -72,14 +62,14 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PostRequest $request, $id)
+    public function update(ProductRequest $request, $id)
     {
-        $data = $request->all();
-        $this->post->update($id, $data);
+        $data =  $request->all();
+        $this->product->update($data, $id);
 
         return response()->json([
             'status' => true,
-            'message' => "Post Updated",
+            'message' => 'Product Updated Successfully'
         ]);
     }
 
@@ -91,13 +81,12 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        $post =  $this->post->findOrFail($id);
-        $post->delete($id);
-
+        $product =  $this->product->findOrFail($id);
+        $product->delete();
         return response()->json([
             'status' => true,
-            'message' => "Post deleted",
-            'data' => $post
+            'message' => "Product Deleted Successfully",
+            'data' => $product
         ]);
     }
 }

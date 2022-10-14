@@ -2,9 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\ProductController;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -15,3 +15,4 @@ Route::get('/show', [UserController::class, 'index']);
 Route::post('create', [UserController::class, 'create']);
 
 Route::resource('posts', PostController::class)->except(['create', 'edit']);
+Route::resource('product', ProductController::class)->except(['create', 'edit']);
