@@ -33,8 +33,6 @@ class PostController extends Controller
             'message' => 'Post List',
             'data'    => $posts
         ]);
-        /*  $data = $this->post->allPost();
-        return PostResource::collection($data); */
     }
 
     /**

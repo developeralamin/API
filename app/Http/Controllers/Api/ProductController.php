@@ -15,7 +15,6 @@ class ProductController extends Controller
     public function __construct()
     {
         $product = new ProductRepository();
-
         $this->product = $product;
     }
 
@@ -27,7 +26,11 @@ class ProductController extends Controller
     public function index()
     {
         $product =  $this->product->allProduct();
-        return ProductResource::collection($product);
+        return response()->json([
+            'success' => true,
+            'message' => 'Product List',
+            'data'    => $product
+        ]);
     }
 
     /**
@@ -39,8 +42,8 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $data = $request->all();
-        $post =  $this->product->createProduct($data);
-        return new ProductResource($post);
+        $product =  $this->product->createProduct($data);
+        return new ProductResource($product);
     }
 
     /**
@@ -65,7 +68,7 @@ class ProductController extends Controller
     public function update(ProductRequest $request, $id)
     {
         $data =  $request->all();
-        $this->product->update($data, $id);
+        $this->product->update($id, $data);
 
         return response()->json([
             'status' => true,

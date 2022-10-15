@@ -11,7 +11,7 @@ class ProductRepository
 	 */
 	public function allProduct()
 	{
-		return Product::all();
+		return Product::paginate(8);
 	}
 
 	/**
