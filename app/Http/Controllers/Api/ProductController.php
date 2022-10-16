@@ -26,6 +26,7 @@ class ProductController extends Controller
     public function index()
     {
         $product =  $this->product->allProduct();
+        // return ProductResource::collection($data);
         return response()->json([
             'success' => true,
             'message' => 'Product List',

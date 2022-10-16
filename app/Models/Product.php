@@ -9,8 +9,9 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $guarded = [''];
-    public function posts()
+    protected $guarded = ['id'];
+
+    public function post()
     {
         return $this->belongsTo(Post::class, 'post_id');
     }
