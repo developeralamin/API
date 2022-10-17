@@ -13,7 +13,7 @@ class PostRepository
      */
     public function allPost()
     {
-        return Post::paginate(8);
+        return Post::paginate(5);
     }
 
     /**
