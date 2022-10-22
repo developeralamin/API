@@ -25,8 +25,13 @@ class LessonController extends Controller
      */
     public function index()
     {
-        $data = $this->lesson->allLesson();
-        return LessonResource::collection($data);
+        $lesson = $this->lesson->allLesson();
+        // return LessonResource::collection($data);
+        return response()->json([
+            'success' => true,
+            'message' => 'lesson List',
+            'data'    => $lesson
+        ]);
     }
 
 
@@ -82,11 +87,9 @@ class LessonController extends Controller
     {
         $lesson =  $this->lesson->findOrFail($id);
         $lesson->delete();
-
         return response()->json([
             'status' => true,
             'message' => "Lesson Deleted Successfully",
-            'data' => $lesson
         ]);
     }
 }

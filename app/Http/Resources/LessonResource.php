@@ -18,7 +18,7 @@ class LessonResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'post_id' => $this->post_id,
-            'post_title'   => $this->post->title,
+            'post_title'   => optional($this->post)->title,
             'description' => $this->description,
             'video_url' => $this->video_url,
         ];

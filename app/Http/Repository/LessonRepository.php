@@ -12,7 +12,7 @@ class LessonRepository
      */
     public function allLesson()
     {
-        return Lesson::all();
+        return Lesson::with('post')->paginate(5);
     }
 
     /**

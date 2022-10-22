@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('post_id')
                 ->nullable()->references('id')
                 ->on('posts')->onDelete('set null');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->string('video_url')->nullable();
             $table->timestamps();
         });

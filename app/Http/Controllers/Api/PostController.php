@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
-use Illuminate\Support\Facades\Validator;
+// use Illuminate\Support\Facades\Validator;
 use App\Http\Repository\PostRepository;
 
 class PostController extends Controller
@@ -43,7 +43,7 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        /*   $validator = Validator::make($request->all(), [
             'title' => 'required|unique:posts|max:255',
             'tags' => 'nullable',
             'description' => 'nullable',
@@ -55,7 +55,7 @@ class PostController extends Controller
                 'message' => $validator->getMessageBag()->first(),
                 'errors' => $validator->getMessageBag(),
             ]);
-        }
+        } */
         // $data = $request->all();
         $post = $this->post->createPost($request->all());
 
@@ -82,7 +82,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PostRequest $request, $id)
+    public function update(Request $request, $id)
     {
         $data = $request->all();
         $this->post->update($id, $data);
