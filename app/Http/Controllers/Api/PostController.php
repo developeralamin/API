@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 
-use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Repository\PostRepository;
-use App\Http\Requests\PostRequest;
 
 class PostController extends Controller
 {
@@ -41,11 +41,23 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PostRequest $request)
+    public function store(Request $request)
     {
-        $data = $request->all();
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|unique:posts|max:255',
+            'tags' => 'nullable',
+            'description' => 'nullable',
+        ]);
 
-        $post = $this->post->createPost($data);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->getMessageBag()->first(),
+                'errors' => $validator->getMessageBag(),
+            ]);
+        }
+        // $data = $request->all();
+        $post = $this->post->createPost($request->all());
 
         return new PostResource($post);
     }
