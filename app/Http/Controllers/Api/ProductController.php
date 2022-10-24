@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Repository\ProductRepository;
-use App\Http\Resources\ProductResource;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductResource;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Repository\ProductRepository;
 
 class ProductController extends Controller
 {
@@ -42,6 +43,20 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|unique:products|max:255',
+            'post_id' => 'nullable',
+            'sale_price' => 'nullable',
+            'cost_price' => 'nullable',
+            'photo' => 'nullable',
+        ]);
+        if ($validator->fails()) {
+            return response([
+                'errorMsg' => ($validator->errors()),
+                'msg' => '',
+                'data' => ""
+            ], 400);
+        }
         $data = $request->all();
         $product =  $this->product->createProduct($data);
         return new ProductResource($product);
@@ -68,6 +83,21 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'post_id' => 'nullable',
+            'sale_price' => 'nullable',
+            'cost_price' => 'nullable',
+            'photo' => 'nullable',
+        ]);
+        if ($validator->fails()) {
+            return response([
+                'errorMsg' => ($validator->errors()),
+                'msg' => '',
+                'data' => ""
+            ], 400);
+        }
+
         $data =  $request->all();
         $this->product->update($id, $data);
 

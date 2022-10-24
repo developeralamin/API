@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LessonResource;
 use App\Http\Repository\LessonRepository;
+use Illuminate\Support\Facades\Validator;
 
 class LessonController extends Controller
 {
@@ -43,6 +44,20 @@ class LessonController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|unique:lessons|max:255',
+            'post_id' => 'nullable',
+            'description' => 'nullable',
+            'video_url' => 'nullable',
+        ]);
+        if ($validator->fails()) {
+            return response([
+                'errorMsg' => ($validator->errors()),
+                'msg' => '',
+                'data' => ""
+            ], 400);
+        }
+
         $lesson = $this->lesson->createLesson($request->all());
         return new LessonResource($lesson);
     }
@@ -68,6 +83,20 @@ class LessonController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|max:255',
+            'post_id' => 'nullable',
+            'description' => 'nullable',
+            'video_url' => 'nullable',
+        ]);
+        if ($validator->fails()) {
+            return response([
+                'errorMsg' => ($validator->errors()),
+                'msg' => '',
+                'data' => ""
+            ], 400);
+        }
+
         $lesson = $request->all();
         $this->lesson->update($id, $lesson);
 

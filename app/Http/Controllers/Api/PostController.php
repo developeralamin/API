@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Api;
 
 
 use Illuminate\Http\Request;
-use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
-// use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Repository\PostRepository;
 
 class PostController extends Controller
@@ -43,22 +42,20 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        /*   $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'title' => 'required|unique:posts|max:255',
             'tags' => 'nullable',
             'description' => 'nullable',
         ]);
-
         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->getMessageBag()->first(),
-                'errors' => $validator->getMessageBag(),
-            ]);
-        } */
-        // $data = $request->all();
-        $post = $this->post->createPost($request->all());
+            return response([
+                'errorMsg' => ($validator->errors()),
+                'msg' => '',
+                'data' => ""
+            ], 400);
+        }
 
+        $post = $this->post->createPost($request->all());
         return new PostResource($post);
     }
 
@@ -84,6 +81,18 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|max:255',
+            'tags' => 'nullable',
+            'description' => 'nullable',
+        ]);
+        if ($validator->fails()) {
+            return response([
+                'errorMsg' => ($validator->errors()),
+                'msg' => '',
+                'data' => ""
+            ], 400);
+        }
         $data = $request->all();
         $this->post->update($id, $data);
 
