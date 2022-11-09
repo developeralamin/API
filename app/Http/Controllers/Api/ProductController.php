@@ -8,6 +8,7 @@ use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Repository\ProductRepository;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -28,6 +29,10 @@ class ProductController extends Controller
     {
         $product =  $this->product->allProduct();
         // return ProductResource::collection($data);
+        /*   if ($product->photo) {
+            $product->photo = Storage::url($product->photo);
+        } */
+        return $product;
         return response()->json([
             'success' => true,
             'message' => 'Product List',
@@ -58,6 +63,9 @@ class ProductController extends Controller
             ], 400);
         }
         $data = $request->all();
+        if ($request->file('photo')) {
+            $data['photo'] = Storage::putFile('public/productImage', $request->file('photo'));
+        }
         $product =  $this->product->createProduct($data);
         return new ProductResource($product);
     }
@@ -71,6 +79,9 @@ class ProductController extends Controller
     public function show($id)
     {
         $product =  $this->product->findOrFail($id);
+        if ($product->photo) {
+            $product->photo = Storage::url($product->photo);
+        }
         return new ProductResource($product);
     }
 
@@ -99,6 +110,14 @@ class ProductController extends Controller
         }
 
         $data =  $request->all();
+        $product =  $this->product->findOrFail($id);
+
+        if ($request->file('photo')) {
+            if ($product->photo) {
+                Storage::delete($product->photo);
+            }
+            $data['photo'] = Storage::putFile('public/productImage', $request->file('photo'));
+        }
         $this->product->update($id, $data);
 
         return response()->json([
@@ -116,6 +135,9 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product =  $this->product->findOrFail($id);
+        if ($product->photo) {
+            Storage::delete($product->photo);
+        }
         $product->delete();
         return response()->json([
             'status' => true,
